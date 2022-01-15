@@ -14,6 +14,19 @@ itemsRouter.get("/", async (req, res) => {
     }
 });
 
+//delete
+itemsRouter.delete("/:id", async (req, res) => {
+    try {
+      // send all people
+      res.json(await Item.findByIdAndDelete(req.params.id))
+    } catch (error) {
+      //send error
+      res.status(400).json(error)
+    }
+  });
+  
+
+
 //create
 itemsRouter.post("/", async (req, res) => {
     try {
