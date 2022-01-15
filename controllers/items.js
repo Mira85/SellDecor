@@ -23,6 +23,17 @@ itemsRouter.post("/", async (req, res) => {
     }
 });
 
+//update
+itemsRouter.put("/:id", async (req, res) => {
+    try {
+        res.json(
+            await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        );
+    } catch (error) {
+        res.status(400).json(error)
+    }
+});
+
 
 
 
