@@ -14,6 +14,16 @@ itemsRouter.get("/", async (req, res) => {
     }
 });
 
+//create
+itemsRouter.post("/", async (req, res) => {
+    try {
+        res.json(await Item.create(req.body));
+    } catch (error) {
+        res.status(400).json(error);
+    }
+});
+
+
 
 
 //export route object
