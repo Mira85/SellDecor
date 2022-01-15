@@ -11,6 +11,8 @@ const { PORT = 3001, DATABASE_URL } = process.env
 const cors = require("cors");
 const morgan = require("morgan")
 
+const itemsController = require("./controllers/items");
+
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -27,6 +29,7 @@ mongoose.connection
 app.get("/", (req, res) => {
     res.send("hello world")
 });
+app.use("/item/", itemsController);
 
 //Listener
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
