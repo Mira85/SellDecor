@@ -12,6 +12,7 @@ const cors = require("cors");
 const morgan = require("morgan")
 
 const itemsController = require("./controllers/items");
+const usersController = require("./controllers/users");
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
     res.send("hello world")
 });
 app.use("/item/", itemsController);
+app.use("/user/", usersController);
 
 //Listener
 app.listen(PORT, () => console.log(`listening on PORT ${PORT}`));
