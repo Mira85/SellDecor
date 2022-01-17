@@ -16,10 +16,18 @@ itemsRouter.get("/", async (req, res) => {
 });
 
 //delete
-itemsRouter.delete("/:id", async (req, res) => {
+itemsRouter.delete("/:deleteItemId", async (req, res) => {
     try {
-      // send all people
-      res.json(await Item.findByIdAndDelete(req.params.id))
+        await Item.findByIdAndDelete(req.params.deleteItemId)
+        const userId = req.query.user_id;
+        const user = await User.findById(userId);
+        console.log(user);
+
+        user.itemsToSell = user.itemsToSell.filter(objId => objId != req.params.deleteItemId);
+        await user.save();
+
+      res.status(200);
+      res.end();
     } catch (error) {
       //send error
       res.status(400).json(error)
