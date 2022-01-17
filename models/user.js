@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema ({
     firstName : String,
     lastName : String,
-    itemsToSell : [],
+    itemsToSell : [{ type: Schema.Types.ObjectID, ref: 'Item'}],
     favorites : [{ type: Schema.Types.ObjectID, ref: 'Item'}],
     
 }, {timestamps: true});

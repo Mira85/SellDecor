@@ -1,6 +1,7 @@
 // Dependencies
 const express = require("express");
 const Item = require("../models/item");
+const User = require("../models/user");
 //Route object
 const itemsRouter = express.Router();
 
@@ -30,7 +31,13 @@ itemsRouter.delete("/:id", async (req, res) => {
 //create
 itemsRouter.post("/", async (req, res) => {
     try {
-        res.json(await Item.create(req.body));
+        const newItem = await Item.create(req.body);
+        const userId = req.query.user_id;
+        const user = await User.findById(userId);
+        user.itemsToSell.push(newItem._id);
+        await user.save();
+
+        res.json(newItem);
     } catch (error) {
         res.status(400).json(error);
     }
