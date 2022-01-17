@@ -10,7 +10,7 @@ const usersRouter = express.Router();
 // dashboard route
 usersRouter.get("/dashboard/:id", async (req, res) => {
     try {
-        res.json(await User.findById(req.params.id).populate('favorites'));
+        res.json(await User.findById(req.params.id).populate('favorites').populate('itemsToSell'));
     } catch (error) {
         res.status(400).json(error);
     }
@@ -50,7 +50,7 @@ usersRouter.delete("/delete_favorite", async (req, res) => {
     try {
         const user = await User.findById(req.query.user_id);
         const itemId = mongoose.Types.ObjectId(req.query.item_id) ;
-         //console.log(itemId)
+       
        user.favorites = user.favorites.filter(objId => 
         {
             console.log(objId, itemId);
