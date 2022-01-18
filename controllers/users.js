@@ -31,7 +31,18 @@ usersRouter.post("/", async (req, res) => {
 usersRouter.delete("/:id", async (req, res) => {
     try{
     res.json(await User.findByIdAndDelete(req.params.id));
-    } catch {
+    } catch (error) {
+        res.status(400).json(error);
+    }
+});
+
+//update user
+
+usersRouter.put("/:id", async (req, res) => {
+    try{
+        res.json(await User.findByIdAndUpdate(req.params.id, req.body, {new:true}));
+
+    } catch (error) {
         res.status(400).json(error);
     }
 });
