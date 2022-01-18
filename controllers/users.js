@@ -3,7 +3,6 @@ const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../models/user");
 const Item = require("../models/item");
-const user = require("../models/user");
 //Route object
 const usersRouter = express.Router();
 
@@ -27,6 +26,16 @@ usersRouter.post("/", async (req, res) => {
     }
 });
 
+//delete user
+
+usersRouter.delete("/:id", async (req, res) => {
+    try{
+    res.json(await User.findByIdAndDelete(req.params.id));
+    } catch {
+        res.status(400).json(error);
+    }
+});
+
 //add favorite item to user's object
 usersRouter.post("/add_favorite", async (req, res) => {
     try {
@@ -43,6 +52,8 @@ usersRouter.post("/add_favorite", async (req, res) => {
 
 
 });
+
+
 
 //delete favorite
 
