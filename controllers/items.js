@@ -9,7 +9,17 @@ const itemsRouter = express.Router();
 //Index
 itemsRouter.get("/", async (req, res) => {
     try {
-        res.json(await Item.find({}));
+        if (req.query.category){
+            res.json(await Item.find({"category":req.query.category}))
+        } else {
+            res.json(await Item.find({}));
+
+        }
+        console.log("i am here")
+        const categoryValue = req.query.category
+        console.log(categoryValue)
+      //  res.json(await Item.find({"category":categoryValue}));
+      
     } catch (error) {
         res.status(400).json(error);
     }
@@ -19,7 +29,8 @@ itemsRouter.get("/", async (req, res) => {
 itemsRouter.delete("/:deleteItemId", async (req, res) => {
     try {
         await Item.findByIdAndDelete(req.params.deleteItemId)
-        const userId = req.query.user_id;
+        const userId = "61e46036cff41740fc50ebc0";
+        // TODO const userId = req.query.user_id;
         const user = await User.findById(userId);
         console.log(user);
 
@@ -38,9 +49,12 @@ itemsRouter.delete("/:deleteItemId", async (req, res) => {
 
 //create
 itemsRouter.post("/", async (req, res) => {
+    // console.log(req);
     try {
+        console.log(req.body);
         const newItem = await Item.create(req.body);
-        const userId = req.query.user_id;
+        const userId = "61e46036cff41740fc50ebc0";
+       // TODO const userId = req.query.user_id;
         const user = await User.findById(userId);
         user.itemsToSell.push(newItem._id);
         await user.save();
@@ -53,6 +67,7 @@ itemsRouter.post("/", async (req, res) => {
 
 //update
 itemsRouter.put("/:id", async (req, res) => {
+    console.log('req.body.id', req.body.id)
     try {
         res.json(
             await Item.findByIdAndUpdate(req.params.id, req.body, { new: true })
