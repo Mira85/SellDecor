@@ -1,23 +1,40 @@
 // Dependencies
 const express = require("express");
+const admin = require("firebase-admin");
 const Item = require("../models/item");
 const User = require("../models/user");
 //Route object
 const itemsRouter = express.Router();
 
+
+async function getUser(uId) {
+    const user = await User.findOne({uId : uId});
+    return user;
+} 
+
 //Routes
 //Index
 itemsRouter.get("/", async (req, res) => {
     try {
-        if (req.query.category){
-            res.json(await Item.find({"category":req.query.category}))
+        const user = await getUser(req.user.uid);
+        res.json(user.itemsToSell);
+
+            // res.json(await Item.find({uId: req.user.uid}))
+    } catch (error) {
+        res.status(400).json(error);
+    }
+});
+
+//get category items
+
+itemsRouter.get("/:category", async (req, res) => {
+    try {
+        if (req.params.category){
+            res.json(await Item.find({"category":req.params.category}))
         } else {
             res.json(await Item.find({}));
 
         }
-        console.log("i am here")
-        const categoryValue = req.query.category
-        console.log(categoryValue)
       //  res.json(await Item.find({"category":categoryValue}));
       
     } catch (error) {
@@ -29,10 +46,11 @@ itemsRouter.get("/", async (req, res) => {
 itemsRouter.delete("/:deleteItemId", async (req, res) => {
     try {
         await Item.findByIdAndDelete(req.params.deleteItemId)
-        const userId = "61e46036cff41740fc50ebc0";
-        // TODO const userId = req.query.user_id;
-        const user = await User.findById(userId);
-        console.log(user);
+        
+       
+       const user = await getUser(req.user.uid)
+        console.log(user)
+      
 
         user.itemsToSell = user.itemsToSell.filter(objId => objId != req.params.deleteItemId);
         await user.save();
@@ -49,13 +67,15 @@ itemsRouter.delete("/:deleteItemId", async (req, res) => {
 
 //create
 itemsRouter.post("/", async (req, res) => {
-    // console.log(req);
+   
     try {
+        req.body.uId = req.user.uid;
         console.log(req.body);
         const newItem = await Item.create(req.body);
-        const userId = "61e46036cff41740fc50ebc0";
-       // TODO const userId = req.query.user_id;
-        const user = await User.findById(userId);
+       
+       
+        const user = await getUser(req.user.uid)
+        console.log(user)
         user.itemsToSell.push(newItem._id);
         await user.save();
 

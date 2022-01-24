@@ -8,6 +8,7 @@ const itemSchema = new Schema ({
     category : String,
     img : String,
     price : Number,
+    uId: String
 }, {timestamps: true});
 
 //export mongoose model

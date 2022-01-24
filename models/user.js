@@ -8,6 +8,7 @@ const userSchema = new Schema ({
     lastName : String,
     itemsToSell : [{ type: Schema.Types.ObjectID, ref: 'Item'}],
     favorites : [{ type: Schema.Types.ObjectID, ref: 'Item'}],
+    uId: String
     
 }, {timestamps: true});
 

@@ -8,6 +8,7 @@
 
 # production
 /build
+service-account-credentials.json
 
 # misc
 .env
