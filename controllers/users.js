@@ -12,7 +12,25 @@ const usersRouter = express.Router();
 
 const serviceAccount = require("../service-account-credentials.json");
 
+async function isAuthenticated(req, res, next) {
+  //console.log(req)
+    try{
+        const token = req.get("Authorization");
+    if(!token) throw new Error("you must be logged in first")
 
+    const user = await admin.auth().verifyIdToken(token.replace("Bearer ", ""));
+    if(!user) throw new Error ("something went wrong");
+
+    req.user = user;
+
+    next();
+
+    } catch (error) {
+        res.status(400).json({message: error.message});
+
+    }
+    
+};
 
 
 
@@ -43,7 +61,7 @@ async function getUser(uId) {
 } 
 //get user
 
-usersRouter.get("/", async (req, res) => {
+usersRouter.get("/", isAuthenticated, async (req, res) => {
 
     console.log(req.user);
     try {
@@ -65,7 +83,7 @@ console.log(req.user);
 }); */
 
 // dashboard route
-usersRouter.get("/userinfo", async (req, res) => {
+usersRouter.get("/userinfo", isAuthenticated, async (req, res) => {
     try {
          const user = await getUser(req.user.uid);
          res.json(user);
@@ -77,7 +95,7 @@ usersRouter.get("/userinfo", async (req, res) => {
 
 
 //create
-usersRouter.post("/", async (req, res) => {
+usersRouter.post("/", isAuthenticated, async (req, res) => {
     console.log(req.get("Authorization"))
      req.body.uId = req.body.uid;
     
@@ -93,12 +111,12 @@ usersRouter.post("/", async (req, res) => {
 
 //delete favorite
 
-usersRouter.delete("/delete_favorite", async (req, res) => {
+usersRouter.delete("/delete_favorite", isAuthenticated, async (req, res) => {
        
      try {
         const user = await getUser(req.user.uid);
         const itemId = req.query.item_id;
-               
+
        user.favorites = user.favorites.filter(object => object._id != itemId);
         
         await user.save();
@@ -112,7 +130,7 @@ usersRouter.delete("/delete_favorite", async (req, res) => {
 
 //delete user
 
-usersRouter.delete("/:id", async (req, res) => {
+usersRouter.delete("/:id", isAuthenticated, async (req, res) => {
     try{
     res.json(await User.findByIdAndDelete(req.params.id));
     } catch (error) {
@@ -122,7 +140,7 @@ usersRouter.delete("/:id", async (req, res) => {
 
 //update user
 
-usersRouter.put("/:id", async (req, res) => {
+usersRouter.put("/:id", isAuthenticated, async (req, res) => {
     try{
         res.json(await User.findByIdAndUpdate(req.params.id, req.body, {new:true}));
 
@@ -132,7 +150,7 @@ usersRouter.put("/:id", async (req, res) => {
 });
 
 //add favorite item to user's object
-usersRouter.post("/add_favorite", async (req, res) => {
+usersRouter.post("/add_favorite", isAuthenticated, async (req, res) => {
     try {
         //const user = await User.findById(req.query.user_id);
     

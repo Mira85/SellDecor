@@ -28,26 +28,7 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.use(async function (req, res, next) {
-  //console.log(req)
-    try{
-        const token = req.get("Authorization");
-    if(!token) throw new Error("you must be logged in first")
 
-    const user = await admin.auth().verifyIdToken(token.replace("Bearer ", ""));
-    if(!user) throw new Error ("something went wrong");
-
-    req.user = user;
-
-    next();
-
-    } catch (error) {
-        res.status(400).json({message: error.message});
-
-    }
-    
-}
-)
 
 //Connection with database
 mongoose.connect(DATABASE_URL);
