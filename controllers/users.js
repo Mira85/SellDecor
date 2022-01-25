@@ -91,6 +91,25 @@ usersRouter.post("/", async (req, res) => {
    
 });
 
+//delete favorite
+
+usersRouter.delete("/delete_favorite", async (req, res) => {
+       
+     try {
+        const user = await getUser(req.user.uid);
+        const itemId = req.query.item_id;
+               
+       user.favorites = user.favorites.filter(object => object._id != itemId);
+        
+        await user.save();
+        res.status(200);
+        res.end();
+    } catch (error) {
+        res.status(400).json(error);
+    } 
+});
+
+
 //delete user
 
 usersRouter.delete("/:id", async (req, res) => {
@@ -116,9 +135,9 @@ usersRouter.put("/:id", async (req, res) => {
 usersRouter.post("/add_favorite", async (req, res) => {
     try {
         //const user = await User.findById(req.query.user_id);
-        const user_id ="61e46036cff41740fc50ebc0" 
+    
         const item = req.query.item_id;
-        const user = await User.findById(user_id);
+         const user = await getUser(req.user.uid);
         user.favorites.push(item);
 
         await user.save();
@@ -133,26 +152,7 @@ usersRouter.post("/add_favorite", async (req, res) => {
 
 
 
-//delete favorite
 
-usersRouter.delete("/delete_favorite", async (req, res) => {
-    try {
-        const user = await User.findById(req.query.user_id);
-        const itemId = mongoose.Types.ObjectId(req.query.item_id) ;
-       
-       user.favorites = user.favorites.filter(objId => 
-        {
-            console.log(objId, itemId);
-            objId !== itemId;
-        });
-       console.log(user)
-        await user.save();
-        res.status(200);
-        res.end();
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
 
 //export route object
 module.exports = usersRouter;
