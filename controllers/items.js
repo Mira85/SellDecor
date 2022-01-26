@@ -33,7 +33,7 @@ async function getUser(uId) {
 
 //Routes
 //Index
-itemsRouter.get("/", isAuthenticated, async (req, res) => {
+/* itemsRouter.get("/", isAuthenticated, async (req, res) => {
     try {
         const user = await getUser(req.user.uid);
         res.json(user.itemsToSell);
@@ -42,9 +42,22 @@ itemsRouter.get("/", isAuthenticated, async (req, res) => {
     } catch (error) {
         res.status(400).json(error);
     }
+}); */
+
+
+itemsRouter.get("/", async (req, res) => {
+    try {
+        res.json(await Item.find({}));
+     
+
+            // res.json(await Item.find({uId: req.user.uid}))
+    } catch (error) {
+        res.status(400).json(error);
+    }
 });
 
-//get category items
+
+/* //get category items
 
 itemsRouter.get("/:category", async (req, res) => {
     try {
@@ -59,7 +72,7 @@ itemsRouter.get("/:category", async (req, res) => {
     } catch (error) {
         res.status(400).json(error);
     }
-});
+}); */
 
 //delete
 itemsRouter.delete("/:deleteItemId", isAuthenticated, async (req, res) => {
