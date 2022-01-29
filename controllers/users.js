@@ -10,7 +10,7 @@ const usersRouter = express.Router();
 
 
 
-const serviceAccount = require("../service-account-credentials.json");
+// const serviceAccount = require("../service-account-credentials.json");
 
 async function isAuthenticated(req, res, next) {
     //console.log(req)
